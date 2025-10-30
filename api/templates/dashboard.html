@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔱 Chakravyuh Brahmastra Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .scan-form {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 16px;
+        }
+
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .scans-list {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .scan-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .scan-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .scan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .scan-id {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-queued { background: #feca57; color: #333; }
+        .status-running { background: #48dbfb; color: #333; }
+        .status-completed { background: #1dd1a1; color: #fff; }
+        .status-failed { background: #ff6b6b; color: #fff; }
+
+        .scan-details {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔱 Chakravyuh Brahmastra</h1>
+            <p class="subtitle">AI-Powered Cyber Defense Framework</p>
+        </header>
+
+        <div class="scan-form">
+            <h2 style="margin-bottom: 20px;">🎯 Initiate Scan</h2>
+            <form id="scanForm">
+                <div class="form-group">
+                    <label for="target">Target (IP/Hostname/CIDR):</label>
+                    <input type="text" id="target" name="target" placeholder="192.168.1.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="ports">Port Range:</label>
+                    <input type="text" id="ports" name="ports" value="1-1000" placeholder="1-1000">
+                </div>
+                <div class="form-group">
+                    <label for="scanType">Scan Type:</label>
+                    <select id="scanType" name="scanType">
+                        <option value="tcp_connect">TCP Connect</option>
+                        <option value="service_detection">Service Detection</option>
+                        <option value="syn">SYN Scan (requires root)</option>
+                    </select>
+                </div>
+                <button type="submit">🚀 Launch Scan</button>
+            </form>
+        </div>
+
+        <div class="scans-list">
+            <h2 style="margin-bottom: 20px;">📊 Active Scans</h2>
+            <div id="scansList">
+                <div class="empty-state">
+                    <p>No active scans. Start one above! 👆</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/v1/scan';
+
+        // Submit scan form
+        document.getElementById('scanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const target = document.getElementById('target').value;
+            const ports = document.getElementById('ports').value;
+            const scanType = document.getElementById('scanType').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target, ports, scan_type: scanType })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`✅ Scan initiated! ID: ${data.scan_id}`);
+                    loadScans();
+                } else {
+                    const error = await response.json();
+                    alert(`❌ Error: ${error.detail}`);
+                }
+            } catch (error) {
+                alert(`❌ Failed to start scan: ${error.message}`);
+            }
+        });
+
+        // Load and display scans
+        async function loadScans() {
+            try {
+                const response = await fetch(`${API_BASE}/list`);
+                const scans = await response.json();
+
+                const scansList = document.getElementById('scansList');
+                
+                if (scans.length === 0) {
+                    scansList.innerHTML = '<div class="empty-state"><p>No active scans. Start one above! 👆</p></div>';
+                    return;
+                }
+
+                scansList.innerHTML = scans.map(scan => `
+                    <div class="scan-card">
+                        <div class="scan-header">
+                            <span class="scan-id">${scan.scan_id}</span>
+                            <span class="status status-${scan.status}">${scan.status.toUpperCase()}</span>
+                        </div>
+                        <div class="scan-details">
+                            <p>🎯 Target: ${scan.target}</p>
+                            <p>⏰ Started: ${scan.started_at ? new Date(scan.started_at).toLocaleString() : 'Pending'}</p>
+                            ${scan.error ? `<p style="color: #ff6b6b;">❌ Error: ${scan.error}</p>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load scans:', error);
+            }
+        }
+
+        // Auto-refresh every 3 seconds
+        setInterval(loadScans, 3000);
+        loadScans();
+    </script>
+</body>
+</html>
