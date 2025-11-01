@@ -1,0 +1,27 @@
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.10.6
+pydantic-settings==2.1.0
+
+# Scanning & Network
+python-nmap==0.7.1
+
+# Configuration & Data
+pyyaml==6.0.1
+
+# Templating
+jinja2==3.1.2
+
+# HTTP Client (for webhooks/alerts)
+httpx==0.25.1
+
+# Email (for alerts)
+aiosmtplib==3.0.1
+
+# Logging
+structlog==23.2.0
+python-json-logger==2.0.7
+
+# Additional utilities
+python-multipart==0.0.6

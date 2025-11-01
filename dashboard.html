@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brahmastra - Threat Response Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #20c997;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #1a1d1f;
+            --darker: #111314;
+            --light: #f8f9fa;
+            --border: #2d3133;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--dark);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #adb5bd;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card.healthy .value { color: var(--primary); }
+        .stat-card.low .value { color: #17a2b8; }
+        .stat-card.medium .value { color: var(--warning); }
+        .stat-card.high .value { color: #fd7e14; }
+        .stat-card.critical .value { color: var(--danger); }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--dark);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .panel h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .playbook-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .playbook-item {
+            background: var(--darker);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .playbook-item.LOW { border-color: #17a2b8; }
+        .playbook-item.MEDIUM { border-color: var(--warning); }
+        .playbook-item.HIGH { border-color: #fd7e14; }
+        .playbook-item.CRITICAL { border-color: var(--danger); }
+
+        .playbook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .playbook-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge.LOW { background: #17a2b8; }
+        .badge.MEDIUM { background: var(--warning); color: #000; }
+        .badge.HIGH { background: #fd7e14; }
+        .badge.CRITICAL { background: var(--danger); }
+
+        .test-form {
+            background: var(--darker);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #adb5bd;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .response-log {
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--darker);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .log-entry {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+
+        .log-entry.success { border-color: var(--primary); }
+        .log-entry.error { border-color: var(--danger); }
+        .log-entry.info { border-color: var(--info); }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: var(--primary);
+        }
+
+        .status-indicator.offline {
+            background: var(--danger);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔥 BRAHMASTRA</h1>
+        <p>Automated Threat Response Dashboard | Project Chakravyuh</p>
+    </div>
+
+    <div class="container">
+        <!-- Status Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card healthy">
+                <h3><span class="status-indicator online"></span>System Status</h3>
+                <div class="value" id="systemStatus">LOADING...</div>
+                <small>API Health</small>
+            </div>
+            <div class="stat-card">
+                <h3>Total Playbooks</h3>
+                <div class="value" id="totalPlaybooks">-</div>
+                <small>Registered Strategies</small>
+            </div>
+            <div class="stat-card low">
+                <h3>Low Severity</h3>
+                <div class="value" id="lowCount">-</div>
+                <small>Playbooks</small>
+            </div>
+            <div class="stat-card medium">
+                <h3>Medium Severity</h3>
+                <div class="value" id="mediumCount">-</div>
+                <small>Playbooks</small>
+            </div>
+            <div class="stat-card high">
+                <h3>High Severity</h3>
+                <div class="value" id="highCount">-</div>
+                <small>Playbooks</small>
+            </div>
+            <div class="stat-card critical">
+                <h3>Critical Severity</h3>
+                <div class="value" id="criticalCount">-</div>
+                <small>Playbooks</small>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Playbooks Panel -->
+            <div class="panel">
+                <h2>📚 Active Playbooks</h2>
+                <div class="playbook-list" id="playbookList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading playbooks...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Threat Panel -->
+            <div class="panel">
+                <h2>🎯 Test Threat Response</h2>
+                <div class="test-form">
+                    <div class="form-group">
+                        <label>Source IP</label>
+                        <input type="text" class="form-control" id="sourceIp" value="192.168.1.100">
+                    </div>
+                    <div class="form-group">
+                        <label>Target IP</label>
+                        <input type="text" class="form-control" id="targetIp" value="10.0.0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Severity</label>
+                        <select class="form-control" id="severity">
+                            <option value="LOW">LOW</option>
+                            <option value="MEDIUM">MEDIUM</option>
+                            <option value="HIGH" selected>HIGH</option>
+                            <option value="CRITICAL">CRITICAL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Threat Type</label>
+                        <input type="text" class="form-control" id="threatType" value="intrusion">
+                    </div>
+                    <button class="btn btn-primary" onclick="testThreat()">🚀 Execute Response</button>
+                </div>
+
+                <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">📊 Response Log</h3>
+                <div class="response-log" id="responseLog">
+                    <div class="log-entry info">
+                        <strong>READY</strong> - Dashboard initialized. Waiting for threat submissions...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // Fetch and display system stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('totalPlaybooks').textContent = data.playbooks.total;
+                document.getElementById('lowCount').textContent = data.severity_distribution.LOW;
+                document.getElementById('mediumCount').textContent = data.severity_distribution.MEDIUM;
+                document.getElementById('highCount').textContent = data.severity_distribution.HIGH;
+                document.getElementById('criticalCount').textContent = data.severity_distribution.CRITICAL;
+                
+                // Health check
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                const healthData = await healthResponse.json();
+                document.getElementById('systemStatus').textContent = healthData.status.toUpperCase();
+            } catch (error) {
+                document.getElementById('systemStatus').textContent = 'OFFLINE';
+                document.querySelector('.status-indicator').classList.remove('online');
+                document.querySelector('.status-indicator').classList.add('offline');
+                addLog('ERROR: Unable to connect to API', 'error');
+            }
+        }
+
+        // Load playbooks
+        async function loadPlaybooks() {
+            try {
+                const response = await fetch(`${API_BASE}/playbooks`);
+                const playbooks = await response.json();
+                
+                const container = document.getElementById('playbookList');
+                container.innerHTML = '';
+                
+                playbooks.forEach(pb => {
+                    const item = document.createElement('div');
+                    item.className = `playbook-item ${pb.severity}`;
+                    item.innerHTML = `
+                        <div class="playbook-header">
+                            <span class="playbook-name">${pb.name}</span>
+                            <span class="badge ${pb.severity}">${pb.severity}</span>
+                        </div>
+                        <div style="color: #adb5bd; font-size: 0.9rem;">
+                            ${pb.description}
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #6c757d;">
+                            📋 ${pb.action_count} actions | 🎯 ${pb.threat_types.join(', ')}
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            } catch (error) {
+                addLog('ERROR: Failed to load playbooks', 'error');
+            }
+        }
+
+        // Test threat response
+        async function testThreat() {
+            const sourceIp = document.getElementById('sourceIp').value;
+            const targetIp = document.getElementById('targetIp').value;
+            const severity = document.getElementById('severity').value;
+            const threatType = document.getElementById('threatType').value;
+
+            addLog(`🚀 Submitting ${severity} threat: ${threatType}`, 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/threats`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        source_ip: sourceIp,
+                        target_ip: targetIp,
+                        severity: severity,
+                        threat_type: threatType,
+                        description: `Dashboard test: ${severity} ${threatType}`
+                    })
+                });
+
+                const result = await response.json();
+                
+                addLog(`✅ Response executed: ${result.actions_executed} actions`, 'success');
+                addLog(`📊 Event ID: ${result.event_id}`, 'info');
+                
+                result.results.forEach((action, idx) => {
+                    addLog(`   Action ${idx + 1}: ${action.action_id} - ${action.status}`, 'success');
+                });
+                
+            } catch (error) {
+                addLog(`❌ ERROR: ${error.message}`, 'error');
+            }
+        }
+
+        // Add log entry
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('responseLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            logContainer.insertBefore(entry, logContainer.firstChild);
+            
+            // Keep only last 20 entries
+            while (logContainer.children.length > 20) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+        }
+
+        // Initialize dashboard
+        async function init() {
+            addLog('🔄 Initializing dashboard...', 'info');
+            await loadStats();
+            await loadPlaybooks();
+            addLog('✅ Dashboard ready!', 'success');
+            
+            // Refresh stats every 10 seconds
+            setInterval(loadStats, 10000);
+        }
+
+        // Start on page load
+        window.onload = init;
+    </script>
+</body>
+</html>
+

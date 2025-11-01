@@ -1,0 +1,2 @@
+[console_scripts]
+brahmastra = brahmastra.cli:main

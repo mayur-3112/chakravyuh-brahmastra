@@ -1,0 +1,115 @@
+test_engine_creation (test_engine_unit.TestEngineInitialization.test_engine_creation)
+Test creating BrahmastraEngine ... ok
+test_disabled_playbook_not_matched (test_engine_unit.TestPlaybookMatching.test_disabled_playbook_not_matched)
+Test disabled playbooks are not matched ... /home/kali/chakravyuh/brahmastra/tests/test_engine_unit.py:143: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_match_high_severity (test_engine_unit.TestPlaybookMatching.test_match_high_severity)
+Test matching HIGH severity event ... /home/kali/chakravyuh/brahmastra/tests/test_engine_unit.py:108: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_match_low_severity (test_engine_unit.TestPlaybookMatching.test_match_low_severity)
+Test matching LOW severity event ... /home/kali/chakravyuh/brahmastra/tests/test_engine_unit.py:91: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_no_match_for_unknown_threat (test_engine_unit.TestPlaybookMatching.test_no_match_for_unknown_threat)
+Test no match for unknown threat type ... /home/kali/chakravyuh/brahmastra/tests/test_engine_unit.py:125: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_register_multiple_playbooks (test_engine_unit.TestPlaybookRegistration.test_register_multiple_playbooks)
+Test registering multiple playbooks ... ok
+test_register_single_playbook (test_engine_unit.TestPlaybookRegistration.test_register_single_playbook)
+Test registering one playbook ... ok
+test_multiple_threats_parallel (test_integration.TestConcurrentThreats.test_multiple_threats_parallel)
+Test handling multiple threats in parallel ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:213: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+/home/kali/chakravyuh/brahmastra/tests/test_integration.py:228: DeprecationWarning: There is no current event loop
+  loop = asyncio.get_event_loop()
+/home/kali/chakravyuh/brahmastra/brahmastra/engine.py:37: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  started_at=datetime.utcnow()
+/home/kali/chakravyuh/brahmastra/brahmastra/engine.py:43: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  result.completed_at = datetime.utcnow()
+ok
+test_exploit_response (test_integration.TestEndToEndWorkflow.test_exploit_response)
+Test response to exploit attempt with CVEs ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:90: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_intrusion_response (test_integration.TestEndToEndWorkflow.test_intrusion_response)
+Test complete response to intrusion threat ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:63: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_port_scan_response (test_integration.TestEndToEndWorkflow.test_port_scan_response)
+Test complete response to port scan threat ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:34: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_empty_actions_playbook (test_integration.TestErrorHandling.test_empty_actions_playbook)
+Test playbook with no actions ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:281: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_invalid_threat_type (test_integration.TestErrorHandling.test_invalid_threat_type)
+Test handling of threat with no matching playbook ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:249: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_no_match_for_disabled_playbook (test_integration.TestPlaybookMatching.test_no_match_for_disabled_playbook)
+Test disabled playbooks are not matched ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:184: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_severity_matching (test_integration.TestPlaybookMatching.test_severity_matching)
+Test playbook matches by severity ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:128: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_threat_type_matching (test_integration.TestPlaybookMatching.test_threat_type_matching)
+Test playbook matches by threat type ... /home/kali/chakravyuh/brahmastra/tests/test_integration.py:150: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_action_type_values (test_models.TestEnums.test_action_type_values)
+Test ActionType enum has security actions ... ok
+test_response_status_values (test_models.TestEnums.test_response_status_values)
+Test ResponseStatus enum ... ok
+test_threat_severity_values (test_models.TestEnums.test_threat_severity_values)
+Test ThreatSeverity enum has all expected values ... ok
+test_response_action_creation (test_models.TestResponseAction.test_response_action_creation)
+Test creating a ResponseAction ... ok
+test_response_action_retry_settings (test_models.TestResponseAction.test_response_action_retry_settings)
+Test ResponseAction retry settings ... ok
+test_response_action_with_priority (test_models.TestResponseAction.test_response_action_with_priority)
+Test ResponseAction with custom priority ... ok
+test_playbook_creation (test_models.TestResponsePlaybook.test_playbook_creation)
+Test creating a playbook with actions ... ok
+test_playbook_disabled (test_models.TestResponsePlaybook.test_playbook_disabled)
+Test disabled playbook ... ok
+test_playbook_multiple_actions (test_models.TestResponsePlaybook.test_playbook_multiple_actions)
+Test playbook with multiple actions ... ok
+test_response_result_completed (test_models.TestResponseResult.test_response_result_completed)
+Test completed ResponseResult ... /home/kali/chakravyuh/brahmastra/tests/test_models.py:238: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  start_time = datetime.utcnow()
+/home/kali/chakravyuh/brahmastra/tests/test_models.py:239: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  end_time = datetime.utcnow()
+ok
+test_response_result_creation (test_models.TestResponseResult.test_response_result_creation)
+Test creating ResponseResult ... /home/kali/chakravyuh/brahmastra/tests/test_models.py:222: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  start_time = datetime.utcnow()
+ok
+test_response_result_failed (test_models.TestResponseResult.test_response_result_failed)
+Test failed ResponseResult ... /home/kali/chakravyuh/brahmastra/tests/test_models.py:258: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  started_at=datetime.utcnow(),
+/home/kali/chakravyuh/brahmastra/tests/test_models.py:259: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  completed_at=datetime.utcnow(),
+ok
+test_threat_event_creation (test_models.TestThreatEvent.test_threat_event_creation)
+Test creating a basic ThreatEvent ... /home/kali/chakravyuh/brahmastra/tests/test_models.py:47: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_threat_event_optional_fields (test_models.TestThreatEvent.test_threat_event_optional_fields)
+Test optional fields have correct defaults ... /home/kali/chakravyuh/brahmastra/tests/test_models.py:67: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+test_threat_event_with_cve_ids (test_models.TestThreatEvent.test_threat_event_with_cve_ids)
+Test ThreatEvent with CVE IDs ... /home/kali/chakravyuh/brahmastra/tests/test_models.py:85: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  timestamp=datetime.utcnow(),
+ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 4.054s
+
+OK

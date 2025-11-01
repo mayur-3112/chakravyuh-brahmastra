@@ -1,0 +1,36 @@
+{
+  "event": {
+    "event_id": "cli_1761997567",
+    "threat_type": "exploit_attempt",
+    "severity": "critical",
+    "source_ip": "198.51.100.89",
+    "target_ip": "10.0.0.15",
+    "timestamp": "2025-11-01T11:46:07.950128"
+  },
+  "results": [
+    {
+      "action_id": "364b06e8-3295-4a0d-96a3-e366ba086479",
+      "status": "completed",
+      "success": true,
+      "started_at": "2025-11-01T11:46:07.950449",
+      "completed_at": "2025-11-01T11:46:08.951697",
+      "error_message": null
+    },
+    {
+      "action_id": "1b4a67c0-00cb-41bf-b6ec-fb90c463ca94",
+      "status": "completed",
+      "success": true,
+      "started_at": "2025-11-01T11:46:07.950492",
+      "completed_at": "2025-11-01T11:46:08.951723",
+      "error_message": null
+    },
+    {
+      "action_id": "37d619e8-8d38-416c-adf6-9a7c6b4da335",
+      "status": "completed",
+      "success": true,
+      "started_at": "2025-11-01T11:46:07.950517",
+      "completed_at": "2025-11-01T11:46:08.951731",
+      "error_message": null
+    }
+  ]
+}

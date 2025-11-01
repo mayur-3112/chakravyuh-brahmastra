@@ -1,0 +1,47 @@
+[92m✓ Loaded 4 playbooks[0m
+[94m[1m
+╔═══════════════════════════════════════════════════════╗
+║                                                       ║
+║   ██████╗ ██████╗  █████╗ ██╗  ██╗███╗   ███╗ █████╗ ║
+║   ██╔══██╗██╔══██╗██╔══██╗██║  ██║████╗ ████║██╔══██╗║
+║   ██████╔╝██████╔╝███████║███████║██╔████╔██║███████║║
+║   ██╔══██╗██╔══██╗██╔══██║██╔══██║██║╚██╔╝██║██╔══██║║
+║   ██████╔╝██║  ██║██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║║
+║   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝║
+║                                                       ║
+║        Automated Threat Response Engine              ║
+║              Project Chakravyuh                      ║
+║                                                       ║
+╚═══════════════════════════════════════════════════════╝
+[0m
+
+[95m[1m📋 Registered Playbooks:[0m
+
+[1m1. Low Severity Default Playbook[0m
+   Severity: [94mlow[0m
+   Threat Types: port_scan, recon
+   Actions: 1 configured
+   Status: [92m✓ ENABLED[0m
+   Auto-execute: True
+
+[1m2. Medium Severity Default Playbook[0m
+   Severity: [93mmedium[0m
+   Threat Types: port_scan, suspicious_activity, anomaly
+   Actions: 2 configured
+   Status: [92m✓ ENABLED[0m
+   Auto-execute: True
+
+[1m3. High Severity Default Playbook[0m
+   Severity: [91mhigh[0m
+   Threat Types: intrusion, exploit_attempt
+   Actions: 2 configured
+   Status: [92m✓ ENABLED[0m
+   Auto-execute: True
+
+[1m4. Critical Severity Default Playbook[0m
+   Severity: [91m[1mcritical[0m
+   Threat Types: exploit_attempt, zero_day
+   Actions: 3 configured
+   Status: [92m✓ ENABLED[0m
+   Auto-execute: False
+

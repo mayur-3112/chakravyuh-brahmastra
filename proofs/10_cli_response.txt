@@ -1,0 +1,43 @@
+[92m✓ Loaded 4 playbooks[0m
+[94m[1m
+╔═══════════════════════════════════════════════════════╗
+║                                                       ║
+║   ██████╗ ██████╗  █████╗ ██╗  ██╗███╗   ███╗ █████╗ ║
+║   ██╔══██╗██╔══██╗██╔══██╗██║  ██║████╗ ████║██╔══██╗║
+║   ██████╔╝██████╔╝███████║███████║██╔████╔██║███████║║
+║   ██╔══██╗██╔══██╗██╔══██║██╔══██║██║╚██╔╝██║██╔══██║║
+║   ██████╔╝██║  ██║██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║║
+║   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝║
+║                                                       ║
+║        Automated Threat Response Engine              ║
+║              Project Chakravyuh                      ║
+║                                                       ║
+╚═══════════════════════════════════════════════════════╝
+[0m
+
+[95m[1m🎯 Processing Threat Event[0m
+
+[1mEvent Details:[0m
+  ID: cli_1762003323
+  Type: port_scan
+  Severity: [94mlow[0m
+  Source IP: 192.168.1.200
+  Target IP: 10.0.0.50
+  Confidence: 100.00%
+
+[96m⚡ Executing response actions...[0m
+
+[1mExecution Results:[0m
+
+[92m✓[0m Action 1/1
+  Action ID: 83602e40-2d0f-44ba-8be6-d969e7f1b152
+  Status: [92mcompleted[0m
+  Success: True
+  Duration: 1.00s
+
+[1mSummary:[0m
+  Total Actions: 1
+  Successful: [92m1[0m
+  Failed: [91m0[0m
+
+[92m✓ Results exported to brahmastra_results_20251101_092204.json[0m

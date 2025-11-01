@@ -1,0 +1,20 @@
+{
+  "event": {
+    "event_id": "cli_1762003323",
+    "threat_type": "port_scan",
+    "severity": "low",
+    "source_ip": "192.168.1.200",
+    "target_ip": "10.0.0.50",
+    "timestamp": "2025-11-01T13:22:03.540910"
+  },
+  "results": [
+    {
+      "action_id": "83602e40-2d0f-44ba-8be6-d969e7f1b152",
+      "status": "completed",
+      "success": true,
+      "started_at": "2025-11-01T13:22:03.541071",
+      "completed_at": "2025-11-01T13:22:04.543784",
+      "error_message": null
+    }
+  ]
+}

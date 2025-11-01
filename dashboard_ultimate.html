@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brahmastra Ultimate - Command Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #20c997;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #1a1d1f;
+            --darker: #111314;
+            --light: #f8f9fa;
+            --border: #2d3133;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+            opacity: 0.05;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .auto-refresh-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--dark);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: #adb5bd;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-feature-settings: 'tnum';
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-card.healthy .value { color: var(--primary); }
+        .stat-card.low .value { color: #17a2b8; }
+        .stat-card.medium .value { color: var(--warning); }
+        .stat-card.high .value { color: #fd7e14; }
+        .stat-card.critical .value { color: var(--danger); }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--dark);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1.5rem;
+        }
+
+        .threat-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .threat-history-table th {
+            background: var(--darker);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .threat-history-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .threat-history-table tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--darker);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--primary);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .activity-icon {
+            font-size: 1.5rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .test-form {
+            background: var(--darker);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #adb5bd;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(32, 201, 151, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #495057;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge.LOW { background: #17a2b8; }
+        .badge.MEDIUM { background: var(--warning); color: #000; }
+        .badge.HIGH { background: #fd7e14; }
+        .badge.CRITICAL { background: var(--danger); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #adb5bd;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #495057;
+        }
+
+        .sound-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark);
+            padding: 1rem;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .sound-indicator:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(32, 201, 151, 0.5);
+        }
+
+        .sound-indicator.muted {
+            border-color: var(--danger);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="content-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🔥 BRAHMASTRA ULTIMATE</h1>
+                <p>Real-Time Threat Response Command Center | Project Chakravyuh</p>
+            </div>
+            <div class="header-right">
+                <div class="auto-refresh-indicator">
+                    <div class="pulse-dot"></div>
+                    Auto-Refresh: 5s
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙 Theme</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Animated Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card healthy">
+                    <h3>System Status</h3>
+                    <div class="value" data-target="HEALTHY" id="systemStatus">-</div>
+                    <small>API Health</small>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Playbooks</h3>
+                    <div class="value" data-target="0" id="totalPlaybooks">0</div>
+                    <small>Active Strategies</small>
+                </div>
+                <div class="stat-card">
+                    <h3>Threats Processed</h3>
+                    <div class="value" data-target="0" id="threatsProcessed">0</div>
+                    <small>Total Responses</small>
+                </div>
+                <div class="stat-card">
+                    <h3>Actions Executed</h3>
+                    <div class="value" data-target="0" id="actionsExecuted">0</div>
+                    <small>Total Actions</small>
+                </div>
+                <div class="stat-card critical">
+                    <h3>Critical Threats</h3>
+                    <div class="value" data-target="0" id="criticalCount">0</div>
+                    <small>High Priority</small>
+                </div>
+                <div class="stat-card">
+                    <h3>Success Rate</h3>
+                    <div class="value" data-target="100" id="successRate">100</div>
+                    <small>%</small>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="main-grid">
+                <!-- Left Column -->
+                <div>
+                    <!-- Charts -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2>📊 Threat Analytics</h2>
+                            <div class="panel-controls">
+                                <button class="icon-btn" onclick="refreshCharts()">🔄</button>
+                                <button class="icon-btn" onclick="exportChart()">💾</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="severityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Threat History -->
+                    <div class="panel" style="margin-top: 1.5rem;">
+                        <div class="panel-header">
+                            <h2>📜 Threat History</h2>
+                            <div class="panel-controls">
+                                <button class="icon-btn" onclick="clearHistory()">🗑️</button>
+                                <button class="icon-btn" onclick="exportHistory()">📥</button>
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="threat-history-table" id="historyTable">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Severity</th>
+                                        <th>Source IP</th>
+                                        <th>Actions</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 2rem; color: #6c757d;">
+                                            No threats processed yet. Execute a test threat to see history.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <!-- Live Activity Feed -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2>🔔 Live Activity</h2>
+                            <div class="panel-controls">
+                                <button class="icon-btn" onclick="clearActivity()">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="activity-feed" id="activityFeed">
+                            <div class="activity-item">
+                                <div class="activity-icon">🟢</div>
+                                <div class="activity-content">
+                                    <strong>System Ready</strong>
+                                    <p style="font-size: 0.9rem; margin-top: 0.25rem;">Dashboard initialized successfully</p>
+                                    <div class="activity-time" id="initTime">Just now</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test Form -->
+                    <div class="panel" style="margin-top: 1.5rem;">
+                        <div class="panel-header">
+                            <h2>🎯 Threat Simulator</h2>
+                        </div>
+                        <div class="test-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Source IP</label>
+                                    <input type="text" class="form-control" id="sourceIp" value="192.168.1.100">
+                                </div>
+                                <div class="form-group">
+                                    <label>Target IP</label>
+                                    <input type="text" class="form-control" id="targetIp" value="10.0.0.5">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Severity</label>
+                                    <select class="form-control" id="severity">
+                                        <option value="LOW">🔵 LOW</option>
+                                        <option value="MEDIUM">🟡 MEDIUM</option>
+                                        <option value="HIGH" selected>🟠 HIGH</option>
+                                        <option value="CRITICAL">🔴 CRITICAL</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Threat Type</label>
+                                    <input type="text" class="form-control" id="threatType" value="intrusion">
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="testThreat()">
+                                    🚀 Execute Response
+                                </button>
+                                <button class="btn btn-secondary" onclick="batchTest()">
+                                    ⚡ Batch Test (3x)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound Indicator -->
+    <div class="sound-indicator" id="soundToggle" onclick="toggleSound()" title="Toggle Sound">
+        🔊
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let threatHistory = [];
+        let soundEnabled = true;
+        let chart = null;
+        let statsCounters = {
+            threatsProcessed: 0,
+            actionsExecuted: 0,
+            successRate: 100
+        };
+
+        // Initialize background particles
+        function initParticles() {
+            const container = document.getElementById('bgAnimation');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Animated counter
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            if (!element || isNaN(end)) return;
+            
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current);
+            }, 16);
+        }
+
+        // Load and animate stats
+        async function loadStats() {
+            try {
+                const [statsRes, healthRes] = await Promise.all([
+                    fetch(`${API_BASE}/stats`),
+                    fetch(`${API_BASE}/health`)
+                ]);
+                
+                const stats = await statsRes.json();
+                const health = await healthRes.json();
+                
+                // Animate playbook count
+                const oldTotal = parseInt(document.getElementById('totalPlaybooks').textContent) || 0;
+                animateValue('totalPlaybooks', oldTotal, stats.playbooks.total, 1000);
+                
+                // Update critical count
+                const oldCritical = parseInt(document.getElementById('criticalCount').textContent) || 0;
+                animateValue('criticalCount', oldCritical, stats.severity_distribution.CRITICAL, 1000);
+                
+                document.getElementById('systemStatus').textContent = health.status.toUpperCase();
+                
+                updateChart(stats.severity_distribution);
+                
+            } catch (error) {
+                addActivity('🔴', 'Connection Error', 'Unable to reach API server', 'error');
+            }
+        }
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('severityChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            '#17a2b8',
+                            '#ffc107',
+                            '#fd7e14',
+                            '#dc3545'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#f8f9fa',
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Severity Distribution',
+                            color: '#f8f9fa',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart
+        function updateChart(distribution) {
+            if (chart) {
+                chart.data.datasets[0].data = [
+                    distribution.LOW,
+                    distribution.MEDIUM,
+                    distribution.HIGH,
+                    distribution.CRITICAL
+                ];
+                chart.update();
+            }
+        }
+
+        // Add activity
+        function addActivity(icon, title, description, type = 'info') {
+            const feed = document.getElementById('activityFeed');
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            
+            item.innerHTML = `
+                <div class="activity-icon">${icon}</div>
+                <div class="activity-content">
+                    <strong>${title}</strong>
+                    <p style="font-size: 0.9rem; margin-top: 0.25rem;">${description}</p>
+                    <div class="activity-time">${timeStr}</div>
+                </div>
+            `;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+            
+            // Play sound for critical threats
+            if (soundEnabled && type === 'critical') {
+                playAlertSound();
+            }
+        }
+
+        // Test threat
+        async function testThreat() {
+            const sourceIp = document.getElementById('sourceIp').value;
+            const targetIp = document.getElementById('targetIp').value;
+            const severity = document.getElementById('severity').value;
+            const threatType = document.getElementById('threatType').value;
+
+            addActivity('🚀', 'Threat Submitted', `${severity} severity ${threatType} detected`, severity.toLowerCase());
+
+            try {
+                const response = await fetch(`${API_BASE}/threats`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_ip: sourceIp,
+                        target_ip: targetIp,
+                        severity: severity,
+                        threat_type: threatType,
+                        description: `Dashboard test: ${severity} ${threatType}`
+                    })
+                });
+
+                const result = await response.json();
+                
+                // Update counters
+                statsCounters.threatsProcessed++;
+                statsCounters.actionsExecuted += result.actions_executed;
+                
+                animateValue('threatsProcessed', statsCounters.threatsProcessed - 1, statsCounters.threatsProcessed, 500);
+                animateValue('actionsExecuted', statsCounters.actionsExecuted - result.actions_executed, statsCounters.actionsExecuted, 500);
+                
+                // Add to history
+                addToHistory({
+                    time: new Date().toLocaleTimeString(),
+                    type: threatType,
+                    severity: severity,
+                    source_ip: sourceIp,
+                    actions: result.actions_executed,
+                    status: result.status
+                });
+                
+                addActivity('✅', 'Response Complete', `Executed ${result.actions_executed} actions successfully`, 'success');
+                
+            } catch (error) {
+                addActivity('❌', 'Execution Failed', error.message, 'error');
+            }
+        }
+
+        // Batch test
+        async function batchTest() {
+            const severities = ['LOW', 'MEDIUM', 'HIGH'];
+            addActivity('⚡', 'Batch Test Started', 'Testing 3 threats concurrently', 'info');
+            
+            for (let i = 0; i < 3; i++) {
+                document.getElementById('severity').value = severities[i];
+                await testThreat();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            addActivity('🎉', 'Batch Complete', 'All 3 threats processed successfully', 'success');
+        }
+
+        // Add to history table
+        function addToHistory(entry) {
+            const tbody = document.getElementById('historyBody');
+            
+            // Remove "no data" message if exists
+            if (tbody.querySelector('td[colspan="6"]')) {
+                tbody.innerHTML = '';
+            }
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${entry.time}</td>
+                <td>${entry.type}</td>
+                <td><span class="badge ${entry.severity}">${entry.severity}</span></td>
+                <td><code>${entry.source_ip}</code></td>
+                <td>${entry.actions}</td>
+                <td><span style="color: var(--primary);">✓ ${entry.status}</span></td>
+            `;
+            
+            tbody.insertBefore(row, tbody.firstChild);
+            
+            // Keep only last 20 entries
+            while (tbody.children.length > 20) {
+                tbody.removeChild(tbody.lastChild);
+            }
+        }
+
+        // Clear history
+        function clearHistory() {
+            if (confirm('Clear all threat history?')) {
+                document.getElementById('historyBody').innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: #6c757d;">
+                            History cleared. Execute threats to see new entries.
+                        </td>
+                    </tr>
+                `;
+                addActivity('🗑️', 'History Cleared', 'All threat history has been cleared', 'info');
+            }
+        }
+
+        // Export history
+        function exportHistory() {
+            const data = {
+                exported_at: new Date().toISOString(),
+                history: threatHistory
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `brahmastra_history_${Date.now()}.json`;
+            a.click();
+            
+            addActivity('💾', 'Export Complete', 'History exported to JSON file', 'success');
+        }
+
+        // Clear activity
+        function clearActivity() {
+            document.getElementById('activityFeed').innerHTML = `
+                <div class="activity-item">
+                    <div class="activity-icon">🟢</div>
+                    <div class="activity-content">
+                        <strong>Activity Cleared</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.25rem;">Feed reset</p>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Toggle sound
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const indicator = document.getElementById('soundToggle');
+            indicator.textContent = soundEnabled ? '🔊' : '🔇';
+            indicator.classList.toggle('muted');
+            
+            addActivity(soundEnabled ? '🔊' : '🔇', 'Sound ' + (soundEnabled ? 'Enabled' : 'Disabled'), 'Alert sounds ' + (soundEnabled ? 'on' : 'off'), 'info');
+        }
+
+        // Play alert sound (simple beep using Web Audio API)
+        function playAlertSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (error) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            // Simple theme toggle - can be expanded
+            alert('Theme toggle coming soon!');
+        }
+
+        // Refresh charts
+        function refreshCharts() {
+            loadStats();
+            addActivity('🔄', 'Charts Refreshed', 'Data updated successfully', 'info');
+        }
+
+        // Export chart
+        function exportChart() {
+            if (chart) {
+                const url = chart.toBase64Image();
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `brahmastra_chart_${Date.now()}.png`;
+                a.click();
+                addActivity('💾', 'Chart Exported', 'Chart saved as PNG', 'success');
+            }
+        }
+
+        // Initialize
+        async function init() {
+            initParticles();
+            initChart();
+            await loadStats();
+            addActivity('✅', 'Dashboard Initialized', 'All systems operational', 'success');
+            
+            // Auto-refresh every 5 seconds
+            setInterval(loadStats, 5000);
+        }
+
+        // Start on load
+        window.onload = init;
+    </script>
+</body>
+</html>
